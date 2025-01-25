@@ -26,13 +26,14 @@ object EuiccDisabler {
 
     private fun isInstalled(pm: PackageManager, pkgName: String) = runCatching {
         val info = pm.getPackageInfo(pkgName, PackageInfoFlags.of(0))
-        info.applicationInfo.flags and ApplicationInfo.FLAG_INSTALLED != 0
+        info?.applicationInfo?.flags?.and(ApplicationInfo.FLAG_INSTALLED) != 0
     }.getOrDefault(false)
 
     private fun isInstalledAndEnabled(pm: PackageManager, pkgName: String) = runCatching {
         val info = pm.getPackageInfo(pkgName, PackageInfoFlags.of(0))
-        Log.d(TAG, "package $pkgName installed, enabled = ${info.applicationInfo.enabled}")
-        info.applicationInfo.enabled
+        val enabled = info?.applicationInfo?.enabled ?: false
+        Log.d(TAG, "package $pkgName installed, enabled = $enabled")
+        enabled
     }.getOrDefault(false)
 
     fun enableOrDisableEuicc(context: Context) {
